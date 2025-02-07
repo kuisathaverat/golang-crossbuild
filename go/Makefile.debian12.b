@@ -1,0 +1,16 @@
+
+
+IMAGES         := base main darwin arm darwin-arm64 npcap
+DEBIAN_VERSION := 12
+TAG_EXTENSION  := -debian12
+
+export DEBIAN_VERSION TAG_EXTENSION
+
+build:
+	@$(foreach var,$(IMAGES),$(MAKE) -C $(var) build || exit 1;)
+
+# Requires login at https://docker.elastic.co:7000/.
+push:
+	@$(foreach var,$(IMAGES),$(MAKE) -C $(var) push || exit 1;)
+
+.PHONY: build push

@@ -1,0 +1,62 @@
+name: Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compile-debian12:
+    runs-on: ubuntu-22.04
+    steps:
+        - name: checkout
+          uses: actions/checkout@v4
+        - name: setup go
+          uses: actions/setup-go@v5
+          with:
+            go-version-file: .go-version
+        - name: compile
+          env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          run: |
+            source .buildkite/scripts/common.sh
+            add_bin_path
+            with_mage
+            make -C go -f Makefile.debian11 build
+
+  compile-debian11:
+    runs-on: ubuntu-22.04
+    steps:
+        - name: checkout
+          uses: actions/checkout@v4
+        - name: setup go
+          uses: actions/setup-go@v5
+          with:
+            go-version-file: .go-version
+        - name: compile
+          env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          run: |
+            source .buildkite/scripts/common.sh
+            add_bin_path
+            with_mage
+            make -C go -f Makefile.debian12 build
+
+  compile-fast:
+    runs-on: ubuntu-22.04
+    steps:
+        - name: checkout
+          uses: actions/checkout@v4
+        - name: setup go
+          uses: actions/setup-go@v5
+          with:
+            go-version-file: .go-version
+        - name: compile
+          env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          run: |
+            source .buildkite/scripts/common.sh
+            add_bin_path
+            with_mage
+            make -C go -f Makefile.debian12.b build
